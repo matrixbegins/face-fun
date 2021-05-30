@@ -15,12 +15,13 @@ class ObjectDetector:
         print("Analyzing objects............")
         self.obj_meta_data = self.rekog_obj.detect_labels(5)
 
-        print("object detection data:: ", self.obj_meta_data)
-
-        print(f"Found {len(self.obj_meta_data)} object")
-        for obj in self.obj_meta_data:
-            print("Object Label:: ", obj.to_dict())
+        # print(f"Found {len(self.obj_meta_data)} object")
+        # for obj in self.obj_meta_data:
+        #     print("Object Label:: ", obj.to_dict())
 
         if len(self.obj_meta_data) < 1:
             raise FileNotFoundError("No Objects present in the given Image.")
 
+
+    def getLabelList(self):
+        return [item.name for item in self.obj_meta_data]

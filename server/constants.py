@@ -28,6 +28,20 @@ response200NoFace = {
     })
 }
 
+response200NoObject = {
+    "statusCode": 200,
+    "headers": {
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': '*'
+    },
+    "body": json.dumps({
+        "status": "error",
+        "message": "Oops! I can't see you. Are you sure you are facing camera?"
+    })
+}
+
 response400 = {
     "statusCode": 400,
     "headers": {
@@ -175,3 +189,7 @@ def getNoFaceResponse():
 
 def getAPIGateWayKey():
     return "D3U3DNGD6C"
+
+
+def getResponse200NoObject():
+    return response200NoObject.copy()

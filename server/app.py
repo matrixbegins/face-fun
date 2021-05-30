@@ -1,11 +1,13 @@
 import os, json, boto3, base64, shortuuid, traceback
 
 from datetime import datetime, timedelta
+from time import time
 from PIL import Image
 from io import BytesIO
 from face_handler import FaceHandler
+from object_handler import ObjectDetector
 
-from constants import get200Response, get400Response, get50XResponse, getNoFaceResponse, getAPIGateWayKey, get401Response
+from constants import get200Response, get400Response, get50XResponse, getAPIGateWayKey, get401Response, getResponse200NoObject
 
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 PREFIX = "thumbnails"
@@ -33,14 +35,14 @@ def upload_handler(event, context):
         print("S3 upload response:: ", upload_response)
 
         # now we are ready for amazon rekognition call
-        detection_response = get_rekognition_data(file_content, upload_path)
+        obj_detection_response = get_object_rekognition_data(file_content, upload_path)
 
-        return get200Response()
+        return build_response(upload_path, obj_detection_response)
 
     except FileNotFoundError as no_face:
         print('FileNotFoundError:: ',no_face)
-        # begin object recognition
-        return getNoFaceResponse()
+
+        return getResponse200NoObject()
 
     except Exception as err:
         traceback.print_exception(None, err, err.__traceback__)
@@ -90,26 +92,11 @@ def resize_image(image, size_vector):
 
 
 def get_rekognition_data(image, img_name):
-
     face_request = FaceHandler(image, img_domain)
-    print('face_request: ', face_request)
-    return {
-        "bounding_box": {
-            "Width": 0.37884587049484253,
-            "Height": 0.45805466175079346,
-            "Left": 0.2737575173377991,
-            "Top": 0.1676315814256668
-        },
-        "age": "22 - 34",
-        "gender": "Male",
-        "emotions": [
-            "HAPPY"
-        ],
-        "has": [
-            "smile",
-            "open eyes"
-        ]
-    }
+
+def get_object_rekognition_data(image, image_name):
+    obj_request = ObjectDetector(image, image_name)
+    return obj_request.getLabelList()
 
 
 def validate_request(event):
@@ -126,9 +113,19 @@ def validate_request(event):
         return get401Response()
 
 
-def build_response(upload_path, face_data={}, object_data={}):
+def build_response(upload_path, object_data):
     response = get200Response()
+    # prepare message
+    msg = "Labels found: " + ", ".join(object_data)
+    responseBody = {
+        "status": "success",
+        "image_url": img_domain + upload_path,
+        "timestamp": int(time()*1000000),
+        "message": msg
+    }
+    response['body'] = json.dumps(responseBody)
 
+    return response
 
 
 if __name__ == "__main__":
@@ -141,7 +138,7 @@ if __name__ == "__main__":
                 "accept": "*/*",
                 "content-length": "1634",
                 "content-type": "image/jpeg",
-                "host": "6o0thjecgxc7e9.execute-api.ap-south-1.amazonaws.com",
+                "host": "6o0-1.amazonaws.com",
                 "user-agent": "curl/7.64.1",
                 "x-amzn-trace-id": "Root=1-602cf8d5-0b6bfa9024nyde51bf4180a3d7",
                 "x-forwarded-for": "XX.XX.XX.XX",
@@ -150,10 +147,10 @@ if __name__ == "__main__":
                 "ff-api-key": "D3U3DNGD6C"
             },
             "requestContext": {
-                "accountId": "6o0thjecgxc7e99988",
-                "apiId": "6o0thjecgxc7e9",
-                "domainName": "6o0thjecgxc7e9.execute-api.ap-south-1.amazonaws.com",
-                "domainPrefix": "6o0thjecgxc7e9",
+                "accountId": "7e99988",
+                "apiId": "c7e9",
+                "domainName": "6o0-south-1.amazonaws.com",
+                "domainPrefix": "6oe9",
                 "http": {
                     "method": "POST",
                     "path": "/face_upload",
