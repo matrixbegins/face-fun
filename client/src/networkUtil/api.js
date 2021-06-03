@@ -6,7 +6,7 @@ const postImage = (image) =>  {
     // console.log("==========image=== ", image)
     if (!image){
         return Promise.resolve({
-            image_url: "https://d2fp043e7v1132.cloudfront.net/thumbnails/site-icon.jpg",
+            image_url: "https://d2fp043e7v1132.cloudfront.net/user-images/site-icon.jpg",
             message: "Welcome! lets begin.",
             timestamp: Date.now()
         })
