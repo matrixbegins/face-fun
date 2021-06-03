@@ -18,8 +18,8 @@ class FaceHandler:
         print("Analyzing face............")
         self.face_meta_data = self.rekog_obj.detect_faces()
         print(f"Found {len(self.face_meta_data)} faces")
-        for face in self.face_meta_data:
-            print("face data:: ", face.to_dict())
+        # for face in self.face_meta_data:
+        #     print("face data:: ", face.to_dict())
 
         if len(self.face_meta_data) < 1:
             raise FileNotFoundError("No faces present in the given Image.")

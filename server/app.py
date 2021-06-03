@@ -1,4 +1,4 @@
-import os, json, boto3, base64, shortuuid, traceback
+import os, json, boto3, base64, shortuuid, traceback, re
 
 from datetime import datetime, timedelta
 from time import time
@@ -19,12 +19,15 @@ img_domain = "https://d2fp043e7v1132.cloudfront.net/"
 def upload_handler(event, context):
     print("event obj:: ", event)
 
-    validate_request(event)
+    validation_response = validate_request(event)
 
-    file_content = base64.b64decode(event['body'])
+    if validation_response:
+        return validation_response
+
+    file_content = decodeImageData(event['body'])
     try:
-        if not validate_file(event):
-            return get400Response("Invalid file format! Supported types JPG and PNG.")
+        # if not validate_file(event):
+        #     return get400Response("Invalid file format! Supported types JPG and PNG.")
 
         # now resize Image for s3 and create Image URL
         resized_img = resize_image(file_content, thumb_size)
@@ -48,6 +51,17 @@ def upload_handler(event, context):
         traceback.print_exception(None, err, err.__traceback__)
         return get50XResponse()
 
+
+def decodeImageData(image_str):
+    # decoding the image first
+    binary_data = base64.b64decode(image_str)
+    base64_str = binary_data.decode('utf-8','ignore')
+    # print(base64_str)
+    # removing image metadata
+    base64_data = re.sub('^data:image/.+;base64,', '', base64_str)
+
+    # creating binary data for further processing.
+    return base64.b64decode(base64_data)
 
 
 def validate_file(event:dict):

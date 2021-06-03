@@ -188,7 +188,7 @@ def getNoFaceResponse():
 
 
 def getAPIGateWayKey():
-    return "D3U3DNGD6C"
+    return "D3U3DNGD6C-6S2FOT7TVD-9WBTCJXAZM-4KZVTGK9V4"
 
 
 def getResponse200NoObject():

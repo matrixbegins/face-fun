@@ -104,7 +104,7 @@ const styles = (theme) => ({
 function HeadSection(props) {
   const { classes, theme, width, imageBody } = props;
   const [apiData, setApiData] = useState([])
-  const [imageSource, setImageSource] = useState("")
+  const [imageSource, setImageSource] = useState(null)
   useEffect(() => {
     postImage(imageSource).then(jsonObj => {
       const newApiData = apiData.concat(jsonObj)
@@ -142,7 +142,7 @@ function HeadSection(props) {
             {
               apiData.filter(item => !!item ).map(item => {
                return (<Box key={item.timestamp}>
-                  <UserReactionCard imageUrl={item.img_url}
+                  <UserReactionCard imageUrl={item.image_url}
                     message={item.message}
                     time={item.timestamp} />
                 </Box>)

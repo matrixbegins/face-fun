@@ -3,21 +3,25 @@ const API_URL = "https://6orjixc7e9.execute-api.ap-south-1.amazonaws.com/main/fa
 
 
 const postImage = (image) =>  {
-    console.log("==========image=== ", image)
+    // console.log("==========image=== ", image)
+    if (!image){
+        return Promise.resolve({
+            image_url: "https://d2fp043e7v1132.cloudfront.net/thumbnails/site-icon.jpg",
+            message: "Welcome! lets begin.",
+            timestamp: Date.now()
+        })
+    }
+
     const options = {
         method: 'POST',
-        data: image,
+        body: image,
         headers: {
-            "Content-Type": "image/jpeg",
+            // "Content-Type": "image/jpeg",
+            "Content-Type": "multipart/form-data",
             "ff-api-key": "D3U3DNGD6C"
         }
     };
 
-    // return Promise.resolve({
-    //     img_url: "https://d2fp043e7v1132.cloudfront.net/thumbnails/bChTbCFyXty5BjFxXmx8GJ.jpg",
-    //     message: "Welcome! lets begin.",
-    //     timestamp: Date.now()
-    // })
 
     return fetch(API_URL, options)
             .then((response) => {
@@ -25,10 +29,10 @@ const postImage = (image) =>  {
             })
             .then((jsonObject) => {
                 console.log("API response", jsonObject)
-                // return jsonObject
+                return jsonObject
             })
             .catch((error) => {
-                console.log("API ERROR:: ", )
+                console.log("API ERROR:: ", error )
             });
 
 }

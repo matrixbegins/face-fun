@@ -5,6 +5,8 @@ import './user-card.css';
 const UserReactionCard = (props) => {
     const {imageUrl, message, time} = props
 
+    // console.log("imageUrl::", imageUrl)
+
     return (
         <div className="tweet-body">
             <div className="inner-body">
@@ -12,10 +14,15 @@ const UserReactionCard = (props) => {
                 <div className="body">
                     <div className="inner-body">
                         <div className="tweet">
-                            {message} - {time}
+                            <strong>{message}</strong>
+                            <br/>
+                            <br/>
+                            <i>{time}</i>
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </div>
     )
